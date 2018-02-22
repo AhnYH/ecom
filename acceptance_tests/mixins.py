@@ -222,7 +222,7 @@ class PaymentMixin(object):
 
     def checkout_with_paypal(self):
         """ Completes the checkout process via PayPal. """
-
+        print 'paypal in --------------------------------------'
         # Click the payment button
         self.browser.find_element_by_css_selector('#paypal').click()
 

@@ -65,7 +65,7 @@ DATABASES = {
 TIME_ZONE = 'America/New_York'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko_kr'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 # This needs to be set to None in order to support multitenancy

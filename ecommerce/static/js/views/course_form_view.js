@@ -121,6 +121,7 @@ define([
             },
 
             initialize: function (options) {
+                alert(4321);
                 this.courseSeatViews = {};
                 this.editing = options.editing || false;
 
@@ -155,6 +156,7 @@ define([
              * @returns {Array}
              */
             getActiveCourseTypes: function () {
+                alert(4354343);
                 var activeCourseTypes,
                     courseType = this.editing ? this.lockedCourseType : this.model.get('type');
 
@@ -180,6 +182,7 @@ define([
             },
 
             setLockedCourseType: function () {
+                alert(67869);
                 this.lockedCourseType = this.model.get('type');
             },
 
@@ -188,6 +191,7 @@ define([
             },
 
             render: function () {
+                alert(7485439);
                 // Render the parent form/template
                 this.$el.html(this.template(this.model.attributes));
 
@@ -209,6 +213,7 @@ define([
              * Renders the course type
              */
             renderCourseTypes: function () {
+                alert(45894587);
                 var $courseTypesContainer,
                     html = '',
                     activeCourseTypes = this.getActiveCourseTypes();
@@ -232,6 +237,7 @@ define([
              * Displays, or hides, the verification deadline based on the course type.
              */
             renderVerificationDeadline: function () {
+                alert(3737834);
                 var $verificationDeadline = this.$el.find('.verification-deadline');
 
                 // TODO Make this display a bit smoother with a slide.
@@ -266,6 +272,7 @@ define([
              * Renders the course seats based upon the course model's type field.
              */
             renderCourseSeats: function () {
+                alert(82872437);
                 var $courseSeats,
                     $courseSeatsContainer = this.$el.find('.course-seats'),
                     activeSeats = this.model.activeSeatTypes();

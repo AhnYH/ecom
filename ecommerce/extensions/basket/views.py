@@ -29,6 +29,7 @@ class BasketSingleItemView(View):
     View that adds a single product to a user's basket.
     An additional coupon code can be supplied so the offer is applied to the basket.
     """
+    print 'PAYTEST121212'
     def get(self, request):
         partner = get_partner_for_site(request)
 
@@ -81,6 +82,7 @@ class BasketSummaryView(BasketView):
     """
     Display basket contents and checkout/payment options.
     """
+    print 'PAYTEST131313'
     def _determine_seat_type(self, product):
         """
         Return the seat type based on the product class

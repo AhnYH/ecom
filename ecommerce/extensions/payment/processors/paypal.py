@@ -1,5 +1,5 @@
 """ PayPal payment processing. """
-from decimal import Decimal
+from decimal import Decimal, ROUND_UP
 import logging
 from urlparse import urljoin
 
@@ -36,6 +36,7 @@ class Paypal(BasePaymentProcessor):
 
     NAME = u'paypal'
     DEFAULT_PROFILE_NAME = 'default'
+    print 'TESTPAY1111'
 
     def __init__(self):
         """
@@ -45,6 +46,7 @@ class Paypal(BasePaymentProcessor):
             KeyError: If a required setting is not configured for this payment processor
         """
         # Number of times payment execution is retried after failure.
+        print 'paypal init ______________________________'
         self.retry_attempts = self.configuration.get('retry_attempts', 1)
 
     @cached_property
@@ -53,6 +55,7 @@ class Paypal(BasePaymentProcessor):
         Returns Paypal API instance with appropriate configuration
         Returns: Paypal API instance
         """
+        print 'TESTPAY2222'
         return paypalrestsdk.Api({
             'mode': self.configuration['mode'],
             'client_id': self.configuration['client_id'],
@@ -89,7 +92,9 @@ class Paypal(BasePaymentProcessor):
             GatewayError: Indicates a general error or unexpected behavior on the part of PayPal which prevented
                 a payment from being created.
         """
+        print 'TESTPAY3333'
         return_url = urljoin(get_ecommerce_url(), reverse('paypal_execute'))
+        print 'return_url \n\n\n\n', return_url, '\n\n'
         data = {
             'intent': 'sale',
             'redirect_urls': {
@@ -101,7 +106,7 @@ class Paypal(BasePaymentProcessor):
             },
             'transactions': [{
                 'amount': {
-                    'total': unicode(basket.total_incl_tax),
+                    'total': unicode(basket.total_incl_tax.quantize(Decimal('1.'), rounding=ROUND_UP)),
                     'currency': basket.currency,
                 },
                 'item_list': {
@@ -112,7 +117,7 @@ class Paypal(BasePaymentProcessor):
                             'name': middle_truncate(line.product.title, 127),
                             # PayPal requires that the sum of all the item prices (where price = price * quantity)
                             # equals to the total amount set in amount['total'].
-                            'price': unicode(line.line_price_incl_tax_incl_discounts / line.quantity),
+                            'price': unicode(line.line_price_incl_tax_incl_discounts / line.quantity).quantize(Decimal('1.'), rounding=ROUND_UP),
                             'currency': line.stockrecord.price_currency,
                         }
                         for line in basket.all_lines()
@@ -121,7 +126,7 @@ class Paypal(BasePaymentProcessor):
                 'invoice_number': basket.order_number,
             }],
         }
-
+        print data
         try:
             web_profile = PaypalWebProfile.objects.get(name=self.DEFAULT_PROFILE_NAME)
             data['experience_profile_id'] = web_profile.id
@@ -129,6 +134,7 @@ class Paypal(BasePaymentProcessor):
             pass
 
         payment = paypalrestsdk.Payment(data, api=self.paypal_api)
+        print 'payment -------------------------- \n', payment
         payment.create()
 
         # Raise an exception for payments that were not successfully created. Consuming code is
@@ -164,7 +170,7 @@ class Paypal(BasePaymentProcessor):
         parameters = {
             'payment_page_url': approval_url,
         }
-
+        print 'parameters ----------- ', parameters
         return parameters
 
     def handle_processor_response(self, response, basket=None):
@@ -184,6 +190,7 @@ class Paypal(BasePaymentProcessor):
                 an approved payment from being executed.
         """
         data = {'payer_id': response.get('PayerID')}
+        print 'TESTPAY4444'
 
         # By default PayPal payment will be executed only once.
         available_attempts = 1
@@ -260,6 +267,7 @@ class Paypal(BasePaymentProcessor):
         but passing `create=True` to `patch()` isn't enough to mock the
         attribute in this module.
         """
+        print 'TESTPAY5555', payment
         return payment.error  # pragma: no cover
 
     def _get_payment_sale(self, payment):

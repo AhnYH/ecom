@@ -6,8 +6,6 @@ import yaml
 from ecommerce.settings.base import *
 from ecommerce.settings.logger import get_logger_config
 
-print 'devstack.py s ------------------------------\n\n\n\n\n'
-
 LOGGING = get_logger_config(debug=True, dev_env=True, local_loglevel='DEBUG')
 
 # Pull in base setting overrides from configuration file.
@@ -40,14 +38,6 @@ PAYMENT_PROCESSOR_CONFIG = {
             'mode': 'sandbox',
             'client_id': 'AT8uLpND3ssYmitAF60U2FfwOS9K_JEVTEI1rOm_RMYUCXvK9zesus1MQOt0IhjAKDdUNVYBmy_md2YS',
             'client_secret': 'EE4OIlmL5RybngfgeN3XEJxPq2BohiEXDYbww0ggKdU6C029yHkFlhncfYcPXGsDAUmP5dwKTI_FakfJ',
-            'receipt_path': 'http://127.0.0.1:8000/commerce/checkout/receipt/',
-            'cancel_path': 'http://127.0.0.1:8000/commerce/checkout/cancel/',
-            'error_path': 'http://127.0.0.1:8000/commerce/checkout/error/',
-        },
-        'iamport': {
-            'mode': 'sandbox',
-            'imp_key': '8764255944804073',
-            'imp_secret': 'azDmP3cHOT76tE4U6SWwYGUL639Ax7nHH14w4geT9mZD04x7XtEVazHhCQR9XeREgVbkcqemMeZNixUg',
             'receipt_path': 'http://127.0.0.1:8000/commerce/checkout/receipt/',
             'cancel_path': 'http://127.0.0.1:8000/commerce/checkout/cancel/',
             'error_path': 'http://127.0.0.1:8000/commerce/checkout/error/',

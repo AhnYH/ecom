@@ -14,6 +14,7 @@ define([
          * @returns {boolean} - Indicates if event handling succeeded (always true).
          */
         return function(event) {
+            alert(43543);
 
             var url = $(this).attr('href').replace(Backbone.history.root, '');
 

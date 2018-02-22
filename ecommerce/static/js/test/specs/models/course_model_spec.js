@@ -270,12 +270,14 @@ define([
                 var expectedAjaxData = function (data) {
                     var products,
                         expected = {
+                            test: 'test',
                             id: data.id,
                             name: data.name,
                             verification_deadline: moment.utc(data.verification_deadline).format()
                         };
 
                     products = _.filter(data.products, function (product) {
+                        alert(1232131);
                         return product.structure === 'child';
                     });
 
@@ -302,14 +304,16 @@ define([
                     // Ensure the data was POSTed to the correct endpoint
                     args = $.ajax.calls.argsFor(0)[0];
                     expect(args.type).toEqual('POST');
-                    expect(args.url).toEqual('/api/v2/publication/');
+                    expect(args.url).toEqual('/api/v2/publication/555');
                     expect(args.contentType).toEqual('application/json');
                     expect(args.headers).toEqual({'X-CSRFToken': cookie});
                     expect(JSON.parse(args.data)).toEqual(expectedAjaxData(data));
                 });
 
                 describe('when honor_mode true', function() {
+                    alert(1);
                     it('adds an honor seat and removes the audit seat', function() {
+
                         var seats;
 
                         model.set('products', []);
@@ -324,6 +328,7 @@ define([
                 });
 
                 describe('when honor_mode false', function() {
+                    alert(2);
                     it('does not add an honor seat and leaves the audit seat', function() {
                         var seats;
 
@@ -340,6 +345,7 @@ define([
             });
 
             describe('getOrCreateSeats', function () {
+                                    alert(3);
                 it('should return existing seats', function () {
                     var mapping = {
                             'audit': [auditSeat],
@@ -373,12 +379,14 @@ define([
             });
 
             describe('products', function () {
+                                    alert(4);
                 it('is a ProductCollection', function () {
                     expect(model.get('products')).toEqual(jasmine.any(ProductCollection));
                 });
             });
 
             describe('verification deadline validation', function () {
+                                    alert(5);
                 it('succeeds if the verification deadline is after the course seats\' expiration dates', function () {
                     var seat = model.getOrCreateSeats('verified')[0];
                     model.set('verification_deadline', '2016-01-01T00:00:00Z');
@@ -400,7 +408,9 @@ define([
             });
 
             describe('products validation', function () {
+                                    alert(6);
                 describe('with single value', function () {
+                                        alert(7);
                     it('should return an error message if any product is invalid', function () {
                         var msg = 'Product validation failed.',
                             products = model.get('products');
@@ -414,6 +424,7 @@ define([
                 });
 
                 describe('with non-products', function () {
+                                        alert(8);
                     it('should have an undefined return value', function () {
                         expect(model.validation.products([])).toBeUndefined();
                     });
@@ -421,7 +432,9 @@ define([
             });
 
             describe('honorModeInit', function () {
+                                    alert(9);
                 describe('with seats', function () {
+                                        alert(10);
                     it('sets honor_mode to true', function () {
                         model.set('honor_mode', null);
                         model.set('products', []);
@@ -441,6 +454,7 @@ define([
                 });
 
                 describe('without seats', function () {
+                                        alert(11);
                     it('should have an undefined return value', function () {
                         model.set('honor_mode', null);
                         model.set('products', []);
@@ -451,7 +465,9 @@ define([
             });
 
             describe('honor mode validation', function () {
+                                    alert(12);
                 describe('without an honor mode', function () {
+                    alert(13);
                     beforeEach(function () {
                         model = Course.findOrCreate({
                             id: 'test/testX/testcourse',

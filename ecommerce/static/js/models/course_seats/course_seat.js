@@ -4,6 +4,7 @@ define([
     ],
     function (moment,
               Product) {
+        alert(99999);
         'use strict';
 
         return Product.extend({
@@ -48,6 +49,7 @@ define([
             // TODO Determine how to use the extended seatType attribute of child classes with Backbone.Relational
             // http://backbonerelational.org/#RelationalModel-subModelTypes
             getSeatType: function () {
+                alert(11111);
                 switch (this.get('certificate_type')) {
                     case 'verified':
                     {
@@ -66,6 +68,7 @@ define([
             },
 
             getSeatTypeDisplayName: function () {
+                alert(22222);
                 switch (this.get('certificate_type')) {
                     case 'verified':
                         return gettext('Verified');
@@ -82,6 +85,7 @@ define([
             },
 
             getCertificateDisplayName: function () {
+                alert(33333);
                 switch (this.get('certificate_type')) {
                     case 'verified':
                     case 'credit':

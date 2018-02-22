@@ -103,6 +103,7 @@ define([
                 includeInJSON: false,
                 parse: true,
                 collectionOptions: function (model) {
+                    alert(123);
                     return {course: model};
                 }
             }],
@@ -133,12 +134,14 @@ define([
             creatableSeatTypes: ['audit', 'honor', 'verified', 'professional', 'credit'],
 
             initialize: function () {
+                alert(222);
                 this.get('products').on('change:id_verification_required', this.triggerIdVerified, this);
                 this.on('sync', this.prepareProducts, this);
                 this.on('sync', this.honorModeInit, this);
             },
 
             parse: function (response) {
+                alert(333);
                 response = this._super(response);
 
                 // Form fields display date-times in the user's local timezone. We want all
@@ -150,6 +153,7 @@ define([
             },
 
             toJSON: function () {
+                alert(444);
                 var data = this._super();
 
                 // Restore the timezone component, and output the ISO 8601 format expected by the server.
@@ -162,6 +166,7 @@ define([
              * Alerts listeners that this Course's ID verification status MAY have changed.
              */
             triggerIdVerified: function () {
+                alert(555);
                 this.trigger('change:id_verification_required', this.isIdVerified());
             },
 
@@ -169,6 +174,7 @@ define([
              * Return boolean if this Course has seats and one of them is Honor.
              */
             honorModeInit: function () {
+                alert(666);
                 var honor_seat;
 
                 if( this.seats().length > 0 ) {
@@ -187,6 +193,7 @@ define([
              * Returns the subset of pertinent child seat products from the Product collection.
              */
             prepareProducts: function () {
+                alert(777);
                 // Create a reference to the current product collection
                 var products = this.get('products');
 
@@ -205,6 +212,7 @@ define([
              * @returns {CourseSeat[]}
              */
             seats: function () {
+                alert(888);
                 return this.get('products').filter(function (product) {
                     // Filter out parent products since there is no need to display or modify.
                     return (product instanceof CourseSeat) &&
@@ -221,6 +229,7 @@ define([
              * @returns {CourseSeat[]}
              */
             getOrCreateSeats: function (seatType) {
+                alert(999);
                 var seatClass,
                     seats = _.filter(this.seats(), function (product) {
                         // Find the seats with the specific seat type
@@ -248,6 +257,7 @@ define([
              * @returns {boolean}
              */
             isIdVerified: function () {
+                alert(10);
                 return Boolean(_.find(this.getCleanProducts(), function (seat) {
                     return seat.get('id_verification_required');
                 }, this));
@@ -277,6 +287,7 @@ define([
              * @returns {String[]} - Array of course seat types, or an empty array if the course type is unrecognized.
              */
             activeSeatTypes: function () {
+                alert(11);
                 return _.result(this.activeCourseTypeSeatMapping, this.get('type'), []);
             },
 
@@ -289,6 +300,7 @@ define([
              * @returns {Product[]}
              */
             getCleanProducts: function () {
+                alert(12);
                 return this.seats().filter(function (seat) {
                     return _.contains(this.validSeatTypes(), seat.getSeatType());
                 }, this);
@@ -302,6 +314,7 @@ define([
              * avoid synchronization issues across systems.
              */
             save: function (options) {
+                alert(13);
                 var verificationDeadline,
                     honorMode,
                     honorSeatClass,
@@ -333,6 +346,7 @@ define([
 
                 // Submit only the relevant products
                 data.products = _.map(this.getCleanProducts(), function (product) {
+                    alert(14);
                     return product.toJSON();
                 }, this);
 
@@ -349,7 +363,7 @@ define([
                     type: 'POST',
 
                     // Use the publication endpoint
-                    url: '/api/v2/publication/',
+                    url: '/api/v2/publication/333',
 
                     // The API requires a CSRF token for all POST requests using session authentication.
                     headers: {'X-CSRFToken': Cookies.get('ecommerce_csrftoken')},

@@ -177,6 +177,7 @@ class BasketCreateView(EdxOrderPlacementMixin, generics.CreateAPIView):
             # Begin the checkout process, if requested, with the requested payment processor.
             payment_processor_name = request.data.get(AC.KEYS.PAYMENT_PROCESSOR_NAME)
             if payment_processor_name:
+                print 'PAYTEST8888 \n\n', payment_processor_name
                 try:
                     payment_processor = get_processor_class_by_name(payment_processor_name)
                 except payment_exceptions.ProcessorNotFoundError as error:
@@ -185,10 +186,16 @@ class BasketCreateView(EdxOrderPlacementMixin, generics.CreateAPIView):
                         payment_exceptions.PROCESSOR_NOT_FOUND_USER_MESSAGE
                     )
             else:
+                print 'PAYTEST7777'
                 payment_processor = get_default_processor_class()
 
             try:
-                response_data = self._checkout(basket, payment_processor())
+                print 'PAYTEST0000'
+                if payment_processor_name == u'iamport':
+                    response_data = self._checkout(basket, payment_processor(), product.course_id)
+                else:
+                    response_data = self._checkout(basket, payment_processor())
+                print 'PAYTEST9999 \n', response_data, '\n\n'
             except Exception as ex:  # pylint: disable=broad-except
                 basket.delete()
                 logger.exception('Failed to initiate checkout for Basket [%d]. The basket has been deleted.', basket_id)
@@ -199,7 +206,7 @@ class BasketCreateView(EdxOrderPlacementMixin, generics.CreateAPIView):
 
         return Response(response_data, status=status.HTTP_200_OK)
 
-    def _checkout(self, basket, payment_processor):
+    def _checkout(self, basket, payment_processor, course_id=None):
         """Perform checkout operations for the given basket.
 
         If the contents of the basket are free, places an order immediately. Otherwise,
@@ -228,7 +235,7 @@ class BasketCreateView(EdxOrderPlacementMixin, generics.CreateAPIView):
         )
 
         response_data = self._generate_basic_response(basket)
-
+        print basket.total_excl_tax, type(basket.total_excl_tax)
         if basket.total_excl_tax == AC.FREE:
             order = self.place_free_order(basket)
 
@@ -236,7 +243,10 @@ class BasketCreateView(EdxOrderPlacementMixin, generics.CreateAPIView):
             # returned by this endpoint, simply returning the order number will suffice for now.
             response_data[AC.KEYS.ORDER] = {AC.KEYS.ORDER_NUMBER: order.number}
         else:
-            parameters = payment_processor.get_transaction_parameters(basket, request=self.request)
+            if payment_processor.NAME == u'iamport':
+                parameters = payment_processor.get_transaction_parameters(basket, request=self.request, course_id=course_id)
+            else:
+                parameters = payment_processor.get_transaction_parameters(basket, request=self.request)
             payment_page_url = parameters.pop('payment_page_url')
 
             response_data[AC.KEYS.PAYMENT_DATA] = {

@@ -53,6 +53,7 @@ define([
              * @returns {String}
              */
             stripTimezone: function (datetime) {
+                alert(1231);
                 if (datetime) {
                     datetime = moment.utc(new Date(datetime)).format('YYYY-MM-DDTHH:mm:ss');
                 }
@@ -148,6 +149,7 @@ define([
              * course_form_view.js.
              */
             addDatePicker: function(context) {
+                alert(987);
                 _.each(context.$el.find('.add-pikaday'), function(el) {
                     if (el.getAttribute('datepicker-initialized') !== 'true') {
                         new Pikaday({

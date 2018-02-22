@@ -13,6 +13,7 @@ require([
         'use strict';
 
         $(function () {
+            alert(732983598);
             var $app = $('#app'),
                 courseApp = new CourseRouter({$el: $app});
 

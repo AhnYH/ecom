@@ -2,6 +2,7 @@ define([
         'models/course_seats/course_seat'
     ],
     function (CourseSeat) {
+        alert(23893839);
         'use strict';
 
         return CourseSeat.extend({
