@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.management import call_command
 from django.db import transaction
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -36,8 +36,14 @@ PaymentProcessorResponse = get_model('payment', 'PaymentProcessorResponse')
 
 @csrf_exempt
 def paymentdata(request):
-    print request
-    return JsonResponse({'aaaa': 'ok'})
+    print 'iamport render !!!!!!!!!!!!!!!!!!!!!!!!!!!'
+    amount = request.POST.get('amount')
+    basket_id = request.POST.get('basket_id')
+    order_number = request.POST.get('order_number')
+    cancel_url = request.POST.get('cancel_url')
+    # course_id = request.POST.get('course_id')
+    currency = request.POST.get('currency')
+    return render(request, 'payment_iamport.html', {'amount': amount, 'basket_id': basket_id, 'order_number': order_number, 'cancel_url': cancel_url, 'currency': currency})
 
 
 class CybersourceNotifyView(EdxOrderPlacementMixin, View):
@@ -224,22 +230,8 @@ class IamportView(EdxOrderPlacementMixin, View):
 
     def post(self, request):
         """Handle an incoming user returned to us by PayPal after approving payment."""
-        iamport_request = request.POST.get('request').replace('=', ':')
-        iamport_list = iamport_request.split('&')
-        print iamport_request
-        print iamport_list
-        basket_id = u''
-        response_data = dict()
-        for list_data in iamport_list:
-            response_data[list_data.split(':')[0]] = list_data.split(':')[1]
-
-        basket_id = response_data['basket_id']
-        # payer_id = request.POST.get('payerID')
-        # logger.info(u"Payment [%s] approved by payer [%s]", order_number, payer_id)
         print 'TESTPAY6666 /Users/kotech/workspace/ecomdev5/ecommerce/ecommerce/extensions/payment/views.py ------------------ \n'
-        iamport_response = response_data
-        # basket = Basket.objects.get(id=basket_id)
-        basket = self._get_basket(response_data['merchant_uid'])
+        basket = self._get_basket(request.POST.get('merchant_uid'))
 
         if not basket:
             return redirect(self.payment_processor.error_url)
@@ -249,7 +241,7 @@ class IamportView(EdxOrderPlacementMixin, View):
         try:
             with transaction.atomic():
                 try:
-                    self.handle_payment(iamport_response, basket)
+                    self.handle_payment(request.POST, basket)
                 except GatewayError as e:
                     print e
                     return redirect(self.payment_processor.error_url)
@@ -279,7 +271,7 @@ class IamportView(EdxOrderPlacementMixin, View):
                 order_total=order_total
             )
 
-            return redirect(receipt_url)
+            return JsonResponse({'receipt_url': receipt_url})
         except:  # pylint: disable=bare-except
             logger.exception(self.order_placement_failure_msg, basket.id)
             return redirect(receipt_url)

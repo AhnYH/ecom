@@ -56,12 +56,12 @@ class Iamport(BasePaymentProcessor):
     def error_url(self):
         return get_lms_url(self.configuration['error_path'])
 
-    def get_transaction_parameters(self, basket, request=None, course_id=None):
+    def get_transaction_parameters(self, basket, request=None):
         print 'get_transaction_parameters start ~~~~~~~~~~~~~'
-        processor_response = {'order_number': basket.order_number, 'amount': basket.total_excl_tax, 'basket_id': basket.id, 'course_id': course_id, 'currency': basket.currency}
+        processor_response = {'order_number': basket.order_number, 'amount': basket.total_excl_tax, 'basket_id': basket.id, 'cancel_url': self.cancel_url, 'currency': basket.currency}
         transaction_id = '{0}_{1}'.format(basket.order_number, basket.id)
         self.record_processor_response(processor_response, transaction_id=transaction_id, basket=basket)
-        parameters = {'payment_page_url': u'/iamport/payment/', 'order_number': basket.order_number, 'amount': basket.total_excl_tax, 'basket_id': basket.id, 'course_id': course_id, 'currency': basket.currency}
+        parameters = {'payment_page_url': u'/payment/iamport/', 'order_number': basket.order_number, 'amount': basket.total_excl_tax, 'basket_id': basket.id, 'cancel_url': self.cancel_url, 'currency': basket.currency}
         return parameters
 
 
@@ -77,6 +77,7 @@ class Iamport(BasePaymentProcessor):
             pay_data = iamport.find(merchant_uid=merchant_uid)
             # price = int(10000)  # test
             price = int(price)
+            self.record_processor_response({'message': 'Payment Submitted', 'response': pay_data}, transaction_id=merchant_uid, basket=basket)
 
             # ---------------------------------------------------------
             print 'pay_data ---------------<><><><>   ', pay_data
@@ -118,6 +119,8 @@ class Iamport(BasePaymentProcessor):
                 except iamport_pay.ResponseError as e:
                     print e.code
                     print e.message  # 에러난 이유를 알 수 있음
+                    logger.error(e.code)
+                    logger.error(e.message)
                 except iamport_pay.HttpError as http_error:
                     print http_error.code
                     print http_error.reason  # HTTP not 200 에러난 이유를 알 수 있음

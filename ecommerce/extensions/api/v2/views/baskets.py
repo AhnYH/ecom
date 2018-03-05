@@ -243,10 +243,7 @@ class BasketCreateView(EdxOrderPlacementMixin, generics.CreateAPIView):
             # returned by this endpoint, simply returning the order number will suffice for now.
             response_data[AC.KEYS.ORDER] = {AC.KEYS.ORDER_NUMBER: order.number}
         else:
-            if payment_processor.NAME == u'iamport':
-                parameters = payment_processor.get_transaction_parameters(basket, request=self.request, course_id=course_id)
-            else:
-                parameters = payment_processor.get_transaction_parameters(basket, request=self.request)
+            parameters = payment_processor.get_transaction_parameters(basket, request=self.request)
             payment_page_url = parameters.pop('payment_page_url')
 
             response_data[AC.KEYS.PAYMENT_DATA] = {

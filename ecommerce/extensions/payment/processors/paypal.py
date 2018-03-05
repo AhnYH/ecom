@@ -117,7 +117,7 @@ class Paypal(BasePaymentProcessor):
                             'name': middle_truncate(line.product.title, 127),
                             # PayPal requires that the sum of all the item prices (where price = price * quantity)
                             # equals to the total amount set in amount['total'].
-                            'price': unicode(line.line_price_incl_tax_incl_discounts / line.quantity).quantize(Decimal('1.'), rounding=ROUND_UP),
+                            'price': unicode((line.line_price_incl_tax_incl_discounts / line.quantity).quantize(Decimal('1.'), rounding=ROUND_UP)),
                             'currency': line.stockrecord.price_currency,
                         }
                         for line in basket.all_lines()
@@ -202,6 +202,7 @@ class Paypal(BasePaymentProcessor):
 
         for attempt_count in range(1, available_attempts + 1):
 
+            # payment = paypalrestsdk.Payment.find(u'1231fdsfa', api=self.paypal_api)
             payment = paypalrestsdk.Payment.find(response.get('paymentId'), api=self.paypal_api)
             payment.execute(data)
 

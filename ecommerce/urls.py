@@ -55,6 +55,10 @@ urlpatterns = AUTH_URLS + [
     url(r'^health/$', core_views.health, name='health'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
+
+    # iamport -------------------------------------------------------------------------------------------
+    # url(r'^iamport/payment/$', 'branding.views.iamport_render', name='iamport_render'),
+    # url(r'^iamport/pay_success/$', 'branding.views.iamport_ok'),
 ]
 
 # Install Oscar extension URLs
